@@ -1,0 +1,25 @@
+.customBtnLogin {
+  background: #ebebeb;
+  border: 2px solid #613d2b;
+}
+
+.customBtnRegister {
+  background: #613d2b;
+  color: white;
+  border: 2px solid #613d2b;
+}
+.nav-item .dropdown-menu {
+  background: #000000;
+}
+
+.nav-item .dropdown-item {
+  color: #ffffff;
+}
+
+.nav-item .dropdown-item:hover {
+  background: #f0ad4e;
+}
+
+.dropdown-menu {
+  background-color: yellow !important;
+}

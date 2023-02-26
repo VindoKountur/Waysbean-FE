@@ -1,0 +1,15 @@
+.jumboContainer {
+    background: #DBB699;
+    width: 90%;
+}
+
+.jumboImg {
+    top: 20px;
+    right: 10px;
+    z-index: 5;
+}
+
+.waves {
+    right: 250px;
+    bottom: 0;
+}

@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1,
+    "images": "/images/rwanda.png",
+    "title": "RWANDA Beans",
+    "description": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Asperiores modi vel doloribus rerum aliquam, recusandae rem molestiae temporibus nobis blanditiis animi quos tempora velit earum itaque pariatur provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur, tenetur eveniet doloremque eum cupiditate obcaecati, explicabo iste vero similique. ipsum dolor sit amet consectetur, adipisicing elit. provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur,",
+    "price": "Rp. 299.900",
+    "stock": 200
+  },
+  {
+    "id": 2,
+    "images": "/images/ethiopia.png",
+    "title": "ETHIOPIA Beans",
+    "price": "Rp. 109.900",
+    "description": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Asperiores modi vel doloribus rerum aliquam, recusandae rem molestiae temporibus nobis blanditiis animi quos tempora velit earum itaque pariatur provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur, tenetur eveniet doloremque eum cupiditate obcaecati, explicabo iste vero similique. ipsum dolor sit amet consectetur, adipisicing elit. provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur,",
+    "stock": 99
+  },
+  {
+    "id": 3,
+    "images": "/images/guatemala.png",
+    "title": "GUETEMALA Beans",
+    "price": "Rp. 300.900",
+    "description": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Asperiores modi vel doloribus rerum aliquam, recusandae rem molestiae temporibus nobis blanditiis animi quos tempora velit earum itaque pariatur provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur, tenetur eveniet doloremque eum cupiditate obcaecati, explicabo iste vero similique. ipsum dolor sit amet consectetur, adipisicing elit. provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur,",
+    "stock": 500
+  },
+  {
+    "id": 4,
+    "images": "/images/nicaragua.png",
+    "title": "NICARAGUA Beans",
+    "price": "Rp. 250.900",
+    "description": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Asperiores modi vel doloribus rerum aliquam, recusandae rem molestiae temporibus nobis blanditiis animi quos tempora velit earum itaque pariatur provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur, tenetur eveniet doloremque eum cupiditate obcaecati, explicabo iste vero similique. ipsum dolor sit amet consectetur, adipisicing elit. provident facilis architecto deleniti harum nulla perferendis repellat sequi odio. Harum fugiat ullam, soluta facilis iure nisi pariatur,",
+    "stock": 352
+  }
+]
