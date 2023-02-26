@@ -24,8 +24,8 @@ const AdminAddProduct = () => {
     let fileUrl = URL.createObjectURL(e.target.files[0]);
     setProduct({
       ...product,
-      // image: fileUrl,
-      image: '/images/ethiopia.png',
+      image: fileUrl,
+      // image: '/images/ethiopia.png',
     });
   };
 

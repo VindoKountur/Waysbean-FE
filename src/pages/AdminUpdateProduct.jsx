@@ -12,7 +12,7 @@ const AdminUpdateProduct = () => {
     stock: 0,
     price: 0,
     description: "",
-    image: '/images/ethiopia.png',
+    image: '',
   });
 
   const handleOnChange = (e) => {
@@ -26,7 +26,7 @@ const AdminUpdateProduct = () => {
     let fileUrl = URL.createObjectURL(e.target.files[0]);
     setProduct({
       ...product,
-      image: '/images/ethiopia.png',
+      image: fileUrl,
     });
   };
 

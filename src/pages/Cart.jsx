@@ -134,7 +134,6 @@ const Cart = () => {
 
       let transactionList =
         JSON.parse(localStorage.getItem("transactions")) || [];
-      console.log(newTransaction);
       // if (transactionList.length === 0) {
       transactionList = [...transactionList, newTransaction];
       localStorage.setItem("transactions", JSON.stringify(transactionList));
