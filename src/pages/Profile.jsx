@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Container, Row, Col } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  ButtonGroup,
+  Button,
+  Dropdown,
+} from "react-bootstrap";
 import { useCookies } from "react-cookie";
 import profilePic from "../images/people.png";
 import qrImg from "../images/qr.png";
@@ -12,6 +19,7 @@ const Profile = () => {
   const [userTransactions, setUserTransactions] = useState([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [sortByProduct, setSortByProduct] = useState(false);
 
   const handleCloseModal = () => {
     setShowDetailModal(false);
@@ -56,12 +64,84 @@ const Profile = () => {
           </Row>
         </Col>
         <Col sm={7}>
-          <p className="fs-4 fw-bold" style={{ color: "#613D2B" }}>
-            My Transaction
-          </p>
+          <div className="d-flex justify-content-between mb-2 align-items-center">
+            <p className="fs-4 fw-bold" style={{ color: "#613D2B" }}>
+              My Transaction
+            </p>
+            <Dropdown as={ButtonGroup}>
+              <Button variant="light">
+                Sortir By {sortByProduct ? "Product" : "Transaction"}
+              </Button>
+
+              <Dropdown.Toggle
+                split
+                variant="secondary"
+                id="dropdown-split-basic"
+              />
+
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => setSortByProduct(false)}>
+                  Transaction
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => setSortByProduct(true)}>
+                  Product
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </div>
           <div className="w-100 h-100 d-flex flex-column gap-3">
             {userTransactions.length > 0 ? (
               userTransactions.map((transaction, i) => {
+                let listProduct = transaction.items;
+
+                if (sortByProduct) {
+                  return listProduct.map((item, i) => {
+                    return (
+                      <Container
+                        fluid
+                        key={i}
+                        className="p-3"
+                        style={{
+                          backgroundColor: "#F6E6DA",
+                          color: "#974A4A",
+                        }}
+                      >
+                        <Row>
+                          <Col className="">
+                            <img
+                              className="object-fit-none "
+                              src={item.image}
+                              // height={180}
+                              width={120}
+                              alt="coffee"
+                            />
+                          </Col>
+                          <Col sm={6} className="d-flex flex-column">
+                            <p className="m-0 fw-bold fs-5">{item.title}</p>
+                            <p className="m-0">
+                              {dateFormat(transaction.date)}
+                            </p>
+                            <br />
+                            <p className="m-0">Price : {item.price}</p>
+                            <p className="m-0">Quantity : {item.quantity}</p>
+                            <p className="fw-bold mb-0">
+                              Subtotal : {formatRp(item.quantity * item.price)}
+                            </p>
+                            <p className="m-0">
+                              Transaction ID : {transaction.id}
+                            </p>
+                          </Col>
+                          <Col className="d-flex flex-column gap-2 justify-content-center align-items-center">
+                            <img src={iconImg} height={50} alt="icon" />
+                            <img src={qrImg} height={75} width={75} alt="qr" />
+                            <StatusText text={transaction.stat} />
+                          </Col>
+                        </Row>
+                      </Container>
+                    );
+                  });
+                }
+
                 let itemNames = transaction.items
                   .map((item) => item.title)
                   .join(", ");
@@ -100,7 +180,12 @@ const Profile = () => {
                         <p className="fw-bold">
                           Subtotal : {formatRp(totalPrice)}
                         </p>
-                        <button onClick={() => handleShowDetailModal(transaction)} className="btn btn-light">Order Detail</button>
+                        <button
+                          onClick={() => handleShowDetailModal(transaction)}
+                          className="btn btn-light"
+                        >
+                          Order Detail
+                        </button>
                       </Col>
                       <Col className="d-flex flex-column gap-2 justify-content-center align-items-center">
                         <img src={iconImg} height={50} alt="icon" />

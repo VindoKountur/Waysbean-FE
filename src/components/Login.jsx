@@ -1,14 +1,12 @@
 import React, { useState, useContext } from "react";
 import { Modal, Button, Form, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
-import { UserContext } from "../utils/UserContext";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 
 const Login = ({ show, closeLoginFunc, handleToRegister }) => {
   const [cookies, setCookie] = useCookies(["users"]);
   const navigate = useNavigate();
-  const { user, setUser } = useContext(UserContext);
   const [form, setForm] = useState({
     email: "",
     password: "",

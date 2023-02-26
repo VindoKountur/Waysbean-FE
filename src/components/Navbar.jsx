@@ -21,12 +21,10 @@ import coffeeIcon from "../images/coffee.png";
 import logoutIcon from "../images/logout.png";
 import profileIcon from "../images/profile.png";
 
-import { UserContext } from "../utils/UserContext";
-
 export default function MyNavbar() {
   const [cookies, setCookies, removeCookies] = useCookies(["users", "cart"]);
   const [totalQuantity, setTotalQuantity] = useState(0);
-  
+
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
 

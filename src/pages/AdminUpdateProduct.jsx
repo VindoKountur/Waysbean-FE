@@ -51,7 +51,7 @@ const AdminUpdateProduct = () => {
       ...products[index]
     })
   }
-
+  
   useEffect(() => {
     getProduct()
   }, [])
