@@ -93,7 +93,7 @@ const Profile = () => {
             {userTransactions.length > 0 ? (
               userTransactions.map((transaction, i) => {
                 let listProduct = transaction.items;
-
+                let randomImage = transaction.items.map((item, i) => item.image)[Math.floor(Math.random() * transaction.items.length)]
                 if (sortByProduct) {
                   return listProduct.map((item, i) => {
                     return (
@@ -166,7 +166,7 @@ const Profile = () => {
                       <Col className="">
                         <img
                           className="object-fit-none "
-                          src={"/images/rwanda.png"}
+                          src={randomImage}
                           // height={180}
                           width={120}
                           alt="coffee"

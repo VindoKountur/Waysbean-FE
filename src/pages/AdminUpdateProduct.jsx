@@ -23,10 +23,11 @@ const AdminUpdateProduct = () => {
   };
 
   const handleFileOnChange = (e) => {
-    let fileUrl = URL.createObjectURL(e.target.files[0]);
+    // let fileUrl = URL.createObjectURL(e.target.files[0]);
+    let fileName = (e.target.files[0].name);
     setProduct({
       ...product,
-      image: fileUrl,
+      image: `/images/${fileName}`,
     });
   };
 

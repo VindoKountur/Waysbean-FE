@@ -21,11 +21,16 @@ const AdminAddProduct = () => {
   };
 
   const handleFileOnChange = (e) => {
-    let fileUrl = URL.createObjectURL(e.target.files[0]);
+    // let fileUrl = URL.createObjectURL(e.target.files[0]);
+    // setProduct({
+    //   ...product,
+    //   image: fileUrl,
+    //   // image: '/images/ethiopia.png',
+    // });
+    let fileName = (e.target.files[0].name);
     setProduct({
       ...product,
-      image: fileUrl,
-      // image: '/images/ethiopia.png',
+      image: `/images/${fileName}`,
     });
   };
 
