@@ -1,17 +1,23 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
+import { useMutation } from 'react-query'
 import attachmentIcon from "../images/file.png";
+import noProductImg from "../images/noproduct.png";
 import Swal from "sweetalert2";
+
+import { API } from '../config/api'
 
 const AdminAddProduct = () => {
   const resetValue = {
-    title: "",
+    name: "",
     stock: 0,
     price: 0,
     description: "",
-    image: "",
-  }
+    photo: "",
+  };
   const [product, setProduct] = useState(resetValue);
+  const [imagePreview, setImagePreview] = useState(noProductImg);
+  const [photoName, setPhotoName] = useState('Choose a photo')
 
   const handleOnChange = (e) => {
     setProduct({
@@ -21,40 +27,52 @@ const AdminAddProduct = () => {
   };
 
   const handleFileOnChange = (e) => {
-    // let fileUrl = URL.createObjectURL(e.target.files[0]);
-    // setProduct({
-    //   ...product,
-    //   image: fileUrl,
-    //   // image: '/images/ethiopia.png',
-    // });
-    let fileName = (e.target.files[0].name);
+    let fileUrl = URL.createObjectURL(e.target.files[0]);
+    setPhotoName(e.target.files[0].name)
     setProduct({
       ...product,
-      image: `/images/${fileName}`,
+      photo: e.target.files[0],
     });
+    setImagePreview(fileUrl);
   };
 
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    const fixedProduct = {
-      ...product,
-      price: parseInt(product.price),
-      stock: parseInt(product.stock)
+  const handleOnSubmit = useMutation(async (e) => {
+    try {
+      e.preventDefault();
+      const fixedProduct = {
+        ...product,
+        price: parseInt(product.price),
+        stock: parseInt(product.stock),
+      };
+      console.log(fixedProduct);
+      const formData = new FormData();
+      formData.set('name', fixedProduct.name);
+      formData.set('price', fixedProduct.price);
+      formData.set('stock', fixedProduct.stock);
+      formData.set('description', fixedProduct.description);
+      formData.set('photo', fixedProduct.photo);
+  
+      const config = {
+        headers: {
+          'Content-type': 'multipart/form-data',
+        },
+      };
+      await API.post("/product", formData, config);
+      
+      Swal.fire({
+        text: "New Product Added",
+        timer: 1000,
+        icon: "success",
+        showConfirmButton: false,
+      }).then(() => {
+        setProduct(resetValue);
+        setImagePreview(noProductImg);
+        setPhotoName('Choose a photo')
+      });
+    } catch (error) {
+      console.log(error);  
     }
-    let products = JSON.parse(localStorage.getItem("products")) || [];
-    let newId = products[products.length - 1]?.id + 1 || 1;
-    const newProduct = { id: newId, ...fixedProduct };
-    products = [...products, newProduct];
-    localStorage.setItem("products", JSON.stringify(products));
-    Swal.fire({
-      text: "New Product Added",
-      timer: 1000,
-      icon: 'success',
-      showConfirmButton: false,
-    }).then(() => {
-      setProduct(resetValue)
-    })
-  };
+  });
   return (
     <Container className="p-4">
       <Row sm={10} className="d-flex justify-items-center align-items-center">
@@ -65,14 +83,14 @@ const AdminAddProduct = () => {
           >
             Add Product
           </p>
-          <Form onSubmit={handleOnSubmit}>
+          <Form onSubmit={(e) => handleOnSubmit.mutate(e)}>
             <Row>
               <Form.Group className="my-3">
                 <Form.Control
                   type="text"
                   placeholder="Name"
-                  value={product.title}
-                  name="title"
+                  value={product.name}
+                  name="name"
                   onChange={handleOnChange}
                   className="py-2"
                   style={{
@@ -127,13 +145,13 @@ const AdminAddProduct = () => {
               <Form.Group className="my-3">
                 <Form.Label
                   htmlFor="upload-image"
-                  className="p-2 rounded"
+                  className="p-2 rounded w-100 d-flex justify-content-between align-items-center"
                   style={{
                     backgroundColor: "#613D2B40",
                     border: "2px solid #613D2B",
                   }}
                 >
-                  Photo Product{" "}
+                  {photoName}
                   <span>
                     <img className="px-2" src={attachmentIcon} alt="file" />
                   </span>
@@ -164,9 +182,7 @@ const AdminAddProduct = () => {
           </Form>
         </Col>
         <Col sm={5} className="mx-auto">
-          {product.image == "" 
-          ? <p>Image Preview</p>
-          : <img src={product.image} alt={"foto"} height={500} /> }
+          <img src={imagePreview} alt={"foto"} height={500} />
         </Col>
       </Row>
     </Container>

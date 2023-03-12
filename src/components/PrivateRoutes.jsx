@@ -1,17 +1,20 @@
+import { useContext } from 'react'
 import { Outlet, Navigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import { UserContext } from '../context/userContext'
 
 export const UserRoute = () => {
-  const [cookies, setCookie] = useCookies(["users"]);
-  let isUser = cookies.users?.email && cookies.users.email !== 'admin@mail.com';
-
+  const [state] = useContext(UserContext)
+  let isUser = state.user.role === "user";
+  
   return isUser ? <Outlet /> : <Navigate to="/" />;
 }
 
 
 export const AdminRoute = () => {
-  const [cookies, setCookie] = useCookies(["users"]);
-  let isAdmin = cookies.users?.email === "admin@mail.com";
+  const [state] = useContext(UserContext)
+  console.log(state);
+  let isAdmin = state.user.role === "admin";
+  console.log("admin route", isAdmin);
 
   return isAdmin ? <Outlet /> : <Navigate to="/" />;
 }

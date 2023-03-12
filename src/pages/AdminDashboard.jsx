@@ -1,11 +1,22 @@
 import React, { useState, useEffect } from "react";
 import { Container, Table, Dropdown } from "react-bootstrap";
+import { useQuery } from 'react-query'
+
 import DetailModal from '../components/DetailModal'
+
+import { API } from '../config/api'
+import { dateFormat } from '../utils/func'
 
 const AdminDashboard = () => {
   const [transactionList, setTransactionList] = useState([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [itemDetail, setItemDetail] = useState(null)
+
+
+  let { data: transactions } = useQuery('transactions', async () => {
+    const res = await API.get("/transactions")
+    return res.data.data
+  })
 
   const handleCloseDetail = () => {
     setShowDetailModal(false);
@@ -18,7 +29,7 @@ const AdminDashboard = () => {
   }
 
   useEffect(() => {
-    getTransactionList();
+    // getTransactionList();
   }, []);
 
   const getTransactionList = () => {
@@ -34,7 +45,7 @@ const AdminDashboard = () => {
     getTransactionList();
   };
   return (
-    <Container className="mt-5">
+    <Container fluid className="mt-5">
       <h1 className="fw-bold fs-3" style={{ color: "#613D2B" }}>
         Income Transaction
       </h1>
@@ -45,22 +56,23 @@ const AdminDashboard = () => {
             <th>Name</th>
             <th>Address</th>
             <th>Post Code</th>
+            <th>Date</th>
             <th>Product Order</th>
             <th>View Detail</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {transactionList.length === 0 ? (
+          {transactions?.length === 0 ? (
             <tr>
               <td colSpan={6} align="center" className="py-4">
                 No Transactions
               </td>
             </tr>
           ) : (
-            transactionList.map((transaction, i) => {
-              let listItemName = transaction.items
-                .map((v) => v.title)
+            transactions?.map((transaction, i) => {
+              let listItemName = transaction.products
+                .map((v) => v.name)
                 .join(", ");
 
               let variants = {
@@ -78,9 +90,10 @@ const AdminDashboard = () => {
               return (
                 <tr key={i}>
                   <td>{i + 1}</td>
-                  <td>{transaction.fullname}</td>
+                  <td>{transaction.name}</td>
                   <td>{transaction.address}</td>
-                  <td>{transaction.postCode}</td>
+                  <td>{transaction.post_code}</td>
+                  <td>{dateFormat(transaction.created_at)}</td>
                   <td>{listItemName}</td>
                   <td>
                     <button className="btn btn-light" onClick={() => handleShowDetail(transaction)}>Detail</button>
@@ -89,9 +102,9 @@ const AdminDashboard = () => {
                     <Dropdown>
                       <Dropdown.Toggle
                         className="text-white"
-                        variant={variants[transaction.stat]}
+                        variant={variants[transaction.status]}
                       >
-                        {statText[transaction.stat]}
+                        {statText[transaction.status]}
                       </Dropdown.Toggle>
                       <Dropdown.Menu>
                         <Dropdown.Item

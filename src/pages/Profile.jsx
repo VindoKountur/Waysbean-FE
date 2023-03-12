@@ -8,18 +8,42 @@ import {
   Dropdown,
 } from "react-bootstrap";
 import { useCookies } from "react-cookie";
-import profilePic from "../images/people.png";
-import qrImg from "../images/qr.png";
-import iconImg from "../images/icon.png";
-import { dateFormat, formatRp } from "../utils/func";
+import { useQuery } from "react-query";
+
 import DetailModal from "../components/DetailModal";
+import MyProfile from "../components/profile/MyProfile";
+import Loading from "../components/Loading";
+import Addresses from "../components/profile/Addresses";
+
+import iconImg from "../images/icon.png";
+import qrImg from "../images/qr.png";
+import { dateFormat, formatRp } from "../utils/func";
+import { API } from "../config/api";
+import { IMG_PATH } from '../utils/const'
 
 const Profile = () => {
-  const [cookies, setCookies] = useCookies(["users"]);
+  const [cookies] = useCookies(["users"]);
   const [userTransactions, setUserTransactions] = useState([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [sortByProduct, setSortByProduct] = useState(false);
+
+  let { data : transactions } = useQuery("transaction", async () => {
+    const { data } = await API.get("/transactions-user");
+    console.log(data.data);
+    return data.data
+  })
+
+  const getUserInfo = async () => {
+    try {
+      const {
+        data: { data },
+      } = await API.get("/user-info");
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const handleCloseModal = () => {
     setShowDetailModal(false);
@@ -41,27 +65,16 @@ const Profile = () => {
   };
 
   useEffect(() => {
-    getUserTransactions();
+    // getUserTransactions();
+    // getUserInfo();
   }, []);
 
   return (
     <Container>
-      <Row className="mt-5" sm={12}>
+      <Row className="mt-2" sm={12}>
         <Col sm={5}>
-          <p className="fs-4 fw-bold" style={{ color: "#613D2B" }}>
-            My Profile
-          </p>
-          <Row sm={11}>
-            <Col sm={5}>
-              <img src={profilePic} alt="profile" />
-            </Col>
-            <Col sm={6}>
-              <p className="fs-6 fw-semibold">Full Name</p>
-              <p>{cookies.users?.fullname}</p>
-              <p className="fs-6 fw-semibold">Email</p>
-              <p>{cookies.users?.email}</p>
-            </Col>
-          </Row>
+          <MyProfile />
+          <Addresses />
         </Col>
         <Col sm={7}>
           <div className="d-flex justify-content-between mb-2 align-items-center">
@@ -90,10 +103,12 @@ const Profile = () => {
             </Dropdown>
           </div>
           <div className="w-100 h-100 d-flex flex-column gap-3">
-            {userTransactions.length > 0 ? (
-              userTransactions.map((transaction, i) => {
-                let listProduct = transaction.items;
-                let randomImage = transaction.items.map((item, i) => item.image)[Math.floor(Math.random() * transaction.items.length)]
+            {transactions?.length > 0 ? (
+              transactions?.map((transaction, i) => {
+                let listProduct = transaction.products;
+                let randomImage = transaction.products.map((item) => item.photo)[
+                  Math.floor(Math.random() * transaction.products.length)
+                ];
                 if (sortByProduct) {
                   return listProduct.map((item, i) => {
                     return (
@@ -110,22 +125,22 @@ const Profile = () => {
                           <Col className="">
                             <img
                               className="object-fit-none "
-                              src={item.image}
+                              src={IMG_PATH + item.photo}
                               // height={180}
                               width={120}
                               alt="coffee"
                             />
                           </Col>
                           <Col sm={6} className="d-flex flex-column">
-                            <p className="m-0 fw-bold fs-5">{item.title}</p>
+                            <p className="m-0 fw-bold fs-5">{item.name}</p>
                             <p className="m-0">
-                              {dateFormat(transaction.date)}
+                              {dateFormat(transaction.created_at)}
                             </p>
                             <br />
                             <p className="m-0">Price : {item.price}</p>
-                            <p className="m-0">Quantity : {item.quantity}</p>
+                            <p className="m-0">Quantity : {item.orderQuantity}</p>
                             <p className="fw-bold mb-0">
-                              Subtotal : {formatRp(item.quantity * item.price)}
+                              Subtotal : {formatRp(item.orderQuantity * item.price)}
                             </p>
                             <p className="m-0">
                               Transaction ID : {transaction.id}
@@ -134,7 +149,7 @@ const Profile = () => {
                           <Col className="d-flex flex-column gap-2 justify-content-center align-items-center">
                             <img src={iconImg} height={50} alt="icon" />
                             <img src={qrImg} height={75} width={75} alt="qr" />
-                            <StatusText text={transaction.stat} />
+                            <StatusText text={transaction.status} />
                           </Col>
                         </Row>
                       </Container>
@@ -142,15 +157,15 @@ const Profile = () => {
                   });
                 }
 
-                let itemNames = transaction.items
-                  .map((item) => item.title)
+                let itemNames = transaction.products
+                  .map((item) => item.name)
                   .join(", ");
                 let totalPrice = 0;
                 let totalQuantity = 0;
 
-                transaction.items.map((item) => {
-                  totalPrice += item.price * item.quantity;
-                  totalQuantity += item.quantity;
+                transaction.products.map((item) => {
+                  totalPrice += item.price * item.orderQuantity;
+                  totalQuantity += item.orderQuantity;
                 });
                 return (
                   <Container
@@ -166,7 +181,7 @@ const Profile = () => {
                       <Col className="">
                         <img
                           className="object-fit-none "
-                          src={randomImage}
+                          src={IMG_PATH + randomImage}
                           // height={180}
                           width={120}
                           alt="coffee"
@@ -174,7 +189,7 @@ const Profile = () => {
                       </Col>
                       <Col sm={6} className="d-flex flex-column">
                         <p className="m-0 fw-bold fs-5">{itemNames}</p>
-                        <p className="m-0">{dateFormat(transaction.date)}</p>
+                        <p className="m-0">{dateFormat(transaction.created_at)}</p>
                         <br />
                         <p className="m-0">Total Quantity : {totalQuantity}</p>
                         <p className="fw-bold">
@@ -190,7 +205,7 @@ const Profile = () => {
                       <Col className="d-flex flex-column gap-2 justify-content-center align-items-center">
                         <img src={iconImg} height={50} alt="icon" />
                         <img src={qrImg} height={75} width={75} alt="qr" />
-                        <StatusText text={transaction.stat} />
+                        <StatusText text={transaction.status} />
                       </Col>
                     </Row>
                   </Container>

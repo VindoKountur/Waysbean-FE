@@ -1,39 +1,78 @@
-import React, { useState } from "react";
-import { Modal, Button, Form, Row } from "react-bootstrap";
+import React, { useState, useContext } from "react";
+import { Modal, Button, Form, Row, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import Swal from "sweetalert2";
+import { API, setAuthToken } from "../config/api";
+import { useMutation } from "react-query";
+import { useCookies } from "react-cookie"
+import { useNavigate } from 'react-router-dom'
+
+import { UserContext, USER_ACTION_TYPE } from "../context/userContext";
 
 const Register = ({ show, closeRegister, handleToLogin }) => {
+  const navigate = useNavigate();
+  const [_, dispatch] = useContext(UserContext)
+  const [cookies] = useCookies(['token'])
+  const [message, setMessage] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
-    fullname: "",
-    address: "",
-    postCode: ""
+    name: "",
+  });
+
+  const handlerRegister = useMutation(async (e) => {
+    try {
+      e.preventDefault();
+
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      const { data: {data} } = await API.post("/register", form, config);
+      console.log(data);
+      dispatch({
+        type: USER_ACTION_TYPE.USER_SUCCESS,
+        payload: data,
+      });
+
+      setAuthToken(cookies.token)
+
+      Swal.fire({
+        icon: "success",
+        text: "Register Success",
+        timer: 1500,
+      }).then(() => {
+        closeRegister();
+        if (data.role === "admin") {
+          navigate("/admin/");
+        } else {
+          navigate("/");
+          // window.location.reload();
+        } 
+      });
+    } catch (error) {
+      const alert = (
+        <Alert
+          variant="danger"
+          className="py-2"
+          role={"button"}
+          onClick={() => setMessage(null)}
+        >
+          {error.response.data.message}
+        </Alert>
+      );
+      setMessage(alert);
+    }
   });
 
   const onChangeHandler = (e) => {
     setForm({
       ...form,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
-  }
-
-  const onSubmitHandler = (e) => {
-    e.preventDefault();
-    let users = localStorage.getItem('users') ? JSON.parse(localStorage.getItem('users')) : []
-    users = [...users, form];
-    localStorage.setItem('users', JSON.stringify(users))
-    Swal.fire({
-      html: "<div class='alert alert-success' role='alert'>Register Success</div>",
-      timer: 1000,
-      showConfirmButton: false,
-      position: 'top',
-      background: '#d1e7dd',
-    }).then(() => {
-      closeRegister()
-    })
-  }
+  };
 
   return (
     <Modal show={show} onHide={closeRegister}>
@@ -44,8 +83,9 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
         >
           REGISTER
         </p>
-        <Form onSubmit={onSubmitHandler}>
+        <Form onSubmit={(e) => handlerRegister.mutate(e)}>
           <Row>
+            <div>{message && message}</div>
             <Form.Group className="my-2">
               <Form.Control
                 type="email"
@@ -79,35 +119,7 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
                 type="text"
                 required
                 placeholder="Full Name"
-                name="fullname"
-                onChange={onChangeHandler}
-                className="py-2"
-                style={{
-                  backgroundColor: "#613D2B40",
-                  border: "2px solid #613D2B",
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="my-2">
-              <Form.Control
-                type="text"
-                required
-                placeholder="Address"
-                name="address"
-                onChange={onChangeHandler}
-                className="py-2"
-                style={{
-                  backgroundColor: "#613D2B40",
-                  border: "2px solid #613D2B",
-                }}
-              />
-            </Form.Group>
-            <Form.Group className="my-2">
-              <Form.Control
-                type="text"
-                required
-                placeholder="Post Code"
-                name="postCode"
+                name="name"
                 onChange={onChangeHandler}
                 className="py-2"
                 style={{
@@ -118,7 +130,7 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
             </Form.Group>
             <Form.Group>
               <Button
-              type="submit"
+                type="submit"
                 className="w-100 py-2"
                 style={{ backgroundColor: "#613D2B" }}
               >

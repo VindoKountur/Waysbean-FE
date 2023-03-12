@@ -3,9 +3,14 @@ import { Modal, Button, Form, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { useMutation } from 'react-query'
+import { API, setAuthToken } from "../config/api"
+import { UserContext, USER_ACTION_TYPE } from "../context/userContext"
+import Swal from "sweetalert2";
 
 const Login = ({ show, closeLoginFunc, handleToRegister }) => {
-  const [cookies, setCookie] = useCookies(["users"]);
+  const [cookies, setCookie] = useCookies(["users", "token"]);
+  const [state, dispatch] = useContext(UserContext)
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
@@ -19,26 +24,58 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
     });
   };
 
-  const handleOnSubmit = (e) => {
-    e.preventDefault();
-    let users = localStorage.getItem("users")
-      ? JSON.parse(localStorage.getItem("users"))
-      : [];
-    const checkUser = users.find(
-      (user) => user.email == form.email && user.password == form.password
-    );
-    if (checkUser === undefined) {
-      return
+  
+
+  const handleOnSubmit = useMutation(async (e) => {
+    try {
+      e.preventDefault();
+  
+      const { data : {data} } = await API.post("/login", form)
+
+      dispatch({
+        type: USER_ACTION_TYPE.LOGIN_SUCCESS,
+        payload: data,
+      })
+
+      setAuthToken(cookies.token)
+
+      Swal.fire({
+        icon:'success',
+        title: 'Login Successful',
+        showConfirmButton: false,
+        timer: 1500,
+      }).then(() => {
+        closeLoginFunc();
+        if (data.role === "admin") {
+          navigate("/admin/");
+        } else {
+          navigate("/");
+        } 
+      })
+
+
+      // let users = localStorage.getItem("users")
+      //   ? JSON.parse(localStorage.getItem("users"))
+      //   : [];
+      // const checkUser = users.find(
+      //   (user) => user.email == form.email && user.password == form.password
+      // );
+      // if (checkUser === undefined) {
+      //   return
+      // }
+      // setCookie("users", checkUser, { path: "/" });
+      // closeLoginFunc();
+      // if (checkUser.email === "admin@mail.com") {
+      //   navigate('/admin/')
+      //   window.location.reload()
+      // } else {
+      //   window.location.reload()
+      // }
+      
+    } catch (error) {
+      console.log(error)
     }
-    setCookie("users", checkUser, { path: "/" });
-    closeLoginFunc();
-    if (checkUser.email === "admin@mail.com") {
-      navigate('/admin/')
-      window.location.reload()
-    } else {
-      window.location.reload()
-    }
-  };
+  });
   return (
     <Modal show={show} onHide={closeLoginFunc}>
       <Modal.Body className="py-4">
@@ -46,7 +83,7 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
           LOGIN
         </p>
         <Row>
-          <Form onSubmit={handleOnSubmit}>
+          <Form onSubmit={(e) => handleOnSubmit.mutate(e)}>
             <Form.Group className="my-3">
               <Form.Control
                 type="email"
