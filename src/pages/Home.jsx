@@ -3,6 +3,7 @@ import Jumbotron from "../components/Jumbotron";
 import Products from "../components/Products";
 
 const Home = () => {
+  document.title = "Waysbeans | Home"
   return (
     <>
       <Jumbotron />

@@ -28,6 +28,8 @@ const DetailProduct = () => {
     setProductInCart(findQuantity);
   };
 
+  document.title = `Beans | ${product?.name}`;
+
   useEffect(() => {
     checkProductInCart();
   }, [cookies.cart]);
@@ -37,7 +39,7 @@ const DetailProduct = () => {
     let cartValue = {
       id: product.id,
       orderQuantity: 1,
-      price: product.price
+      price: product.price,
     };
     if (myCart.length === 0) {
       setCookies("cart", [cartValue], { path: "/" });
@@ -81,7 +83,7 @@ const DetailProduct = () => {
     }
     return value;
   };
-  
+
   return (
     <>
       <Container className="mt-5">

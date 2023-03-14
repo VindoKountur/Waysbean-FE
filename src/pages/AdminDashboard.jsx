@@ -99,7 +99,8 @@ const AdminDashboard = () => {
                     <button className="btn btn-light" onClick={() => handleShowDetail(transaction)}>Detail</button>
                   </td>
                   <td>
-                    <Dropdown>
+                    <StatusText text={transaction.status}></StatusText>
+                    {/* <Dropdown>
                       <Dropdown.Toggle
                         className="text-white"
                         variant={variants[transaction.status]}
@@ -136,7 +137,7 @@ const AdminDashboard = () => {
                           On The Way
                         </Dropdown.Item>
                       </Dropdown.Menu>
-                    </Dropdown>
+                    </Dropdown> */}
                   </td>
                 </tr>
               );
@@ -147,6 +148,44 @@ const AdminDashboard = () => {
       <DetailModal show={showDetailModal} handleClose={handleCloseDetail} detailItem={itemDetail} />
     </Container>
   );
+};
+
+const StatusText = ({ text }) => {
+  switch (text) {
+    case "waiting":
+      return (
+        <p
+          className="alert alert-warning py-1 w-100 text-center"
+          role={"alert"}
+        >
+          Waiting Approve
+        </p>
+      );
+    case "cancel":
+      return (
+        <p className="alert alert-danger py-1 w-100 text-center" role={"alert"}>
+          Cancel
+        </p>
+      );
+    case "success":
+      return (
+        <p
+          className="alert alert-success py-1 w-100 text-center"
+          role={"alert"}
+        >
+          Success
+        </p>
+      );
+    case "ontheway":
+      return (
+        <p className="alert alert-info py-1 w-100 text-center" role={"alert"}>
+          On The Way
+        </p>
+      );
+
+    default:
+      return <p>{text}</p>;
+  }
 };
 
 export default AdminDashboard;

@@ -34,6 +34,8 @@ const Profile = () => {
     return data.data
   })
 
+  document.title = "User Profile";
+
   const getUserInfo = async () => {
     try {
       const {
