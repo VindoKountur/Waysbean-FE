@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
-import { useMutation } from 'react-query'
-import attachmentIcon from "../images/file.png";
-import noProductImg from "../images/noproduct.png";
+import { useMutation } from "react-query";
 import Swal from "sweetalert2";
 
-import { API } from '../config/api'
+import Loading from "../components/Loading";
+
+import attachmentIcon from "../images/file.png";
+import noProductImg from "../images/noproduct.png";
+import { API } from "../config/api";
 
 const AdminAddProduct = () => {
   const resetValue = {
@@ -17,7 +19,8 @@ const AdminAddProduct = () => {
   };
   const [product, setProduct] = useState(resetValue);
   const [imagePreview, setImagePreview] = useState(noProductImg);
-  const [photoName, setPhotoName] = useState('Choose a photo')
+  const [photoName, setPhotoName] = useState("Choose a photo");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOnChange = (e) => {
     setProduct({
@@ -28,7 +31,7 @@ const AdminAddProduct = () => {
 
   const handleFileOnChange = (e) => {
     let fileUrl = URL.createObjectURL(e.target.files[0]);
-    setPhotoName(e.target.files[0].name)
+    setPhotoName(e.target.files[0].name);
     setProduct({
       ...product,
       photo: e.target.files[0],
@@ -37,6 +40,7 @@ const AdminAddProduct = () => {
   };
 
   const handleOnSubmit = useMutation(async (e) => {
+    setIsLoading(true);
     try {
       e.preventDefault();
       const fixedProduct = {
@@ -44,21 +48,20 @@ const AdminAddProduct = () => {
         price: parseInt(product.price),
         stock: parseInt(product.stock),
       };
-      console.log(fixedProduct);
       const formData = new FormData();
-      formData.set('name', fixedProduct.name);
-      formData.set('price', fixedProduct.price);
-      formData.set('stock', fixedProduct.stock);
-      formData.set('description', fixedProduct.description);
-      formData.set('photo', fixedProduct.photo);
-  
+      formData.set("name", fixedProduct.name);
+      formData.set("price", fixedProduct.price);
+      formData.set("stock", fixedProduct.stock);
+      formData.set("description", fixedProduct.description);
+      formData.set("photo", fixedProduct.photo);
+
       const config = {
         headers: {
-          'Content-type': 'multipart/form-data',
+          "Content-type": "multipart/form-data",
         },
       };
       await API.post("/product", formData, config);
-      
+
       Swal.fire({
         text: "New Product Added",
         timer: 1000,
@@ -67,10 +70,12 @@ const AdminAddProduct = () => {
       }).then(() => {
         setProduct(resetValue);
         setImagePreview(noProductImg);
-        setPhotoName('Choose a photo')
+        setPhotoName("Choose a photo");
       });
     } catch (error) {
-      console.log(error);  
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   });
   return (
@@ -171,11 +176,12 @@ const AdminAddProduct = () => {
               </Form.Group>
               <Form.Group>
                 <Button
+                  disabled={isLoading}
                   type="submit"
                   className="w-100 py-2"
                   style={{ backgroundColor: "#613D2B" }}
                 >
-                  Add Product
+                  {isLoading ? "Adding Product..." : "Add Product"}
                 </Button>
               </Form.Group>
             </Row>

@@ -13,11 +13,6 @@ const CartProduct = ({ item, idx }) => {
   const [cookies, setCookies, removeCookie] = useCookies(["cart", "users"]);
   const [product, setProduct] = useState({});
 
-  // let { data: product } = useQuery("product", async () => {
-  //     const res = await API.get('/product/' + item.id)
-  //     console.log(res.data.data);
-  //     return res.data.data
-  // })
   const getProduct = async () => {
     const {
       data: { data },

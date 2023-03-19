@@ -97,7 +97,7 @@ const DetailProduct = () => {
           </Col>
           <Col sm={6} className="p-4">
             <h1 style={{ color: "#613D2B", fontWeight: "bold" }}>
-              {product?.title}
+              {product?.name}
             </h1>
             <p style={{ color: "#974A4A" }}>Stock : {product?.stock}</p>
             <p style={{ textAlign: "justify" }}>{product?.description}</p>

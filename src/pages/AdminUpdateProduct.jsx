@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Form, Button } from "react-bootstrap";
 import { useMutation } from "react-query";
-import attachmentIcon from "../images/file.png";
-import noProductImg from "../images/noproduct.png";
 import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
+import attachmentIcon from "../images/file.png";
 import { API } from "../config/api";
 import { IMG_PATH } from "../utils/const";
 
@@ -63,7 +62,6 @@ const AdminUpdateProduct = () => {
         price: parseInt(product.price),
         stock: parseInt(product.stock),
       };
-      console.log(fixedProduct);
       const formData = new FormData();
       formData.set("name", fixedProduct.name);
       formData.set("price", fixedProduct.price);

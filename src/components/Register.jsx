@@ -31,7 +31,6 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
       };
 
       const { data: {data} } = await API.post("/register", form, config);
-      console.log(data);
       dispatch({
         type: USER_ACTION_TYPE.USER_SUCCESS,
         payload: data,

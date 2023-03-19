@@ -12,9 +12,7 @@ export const UserRoute = () => {
 
 export const AdminRoute = () => {
   const [state] = useContext(UserContext)
-  console.log(state);
   let isAdmin = state.user.role === "admin";
-  console.log("admin route", isAdmin);
 
   return isAdmin ? <Outlet /> : <Navigate to="/" />;
 }

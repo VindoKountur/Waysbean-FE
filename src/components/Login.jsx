@@ -3,14 +3,16 @@ import { Modal, Button, Form, Row } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from 'react-query'
-import { API, setAuthToken } from "../config/api"
-import { UserContext, USER_ACTION_TYPE } from "../context/userContext"
+import { useMutation } from "react-query";
 import Swal from "sweetalert2";
+
+import { UserContext, USER_ACTION_TYPE } from "../context/userContext";
+import { API, setAuthToken } from "../config/api";
 
 const Login = ({ show, closeLoginFunc, handleToRegister }) => {
   const [cookies, setCookie] = useCookies(["users", "token"]);
-  const [state, dispatch] = useContext(UserContext)
+  const [_, dispatch] = useContext(UserContext);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
@@ -24,24 +26,25 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
     });
   };
 
-  
-
   const handleOnSubmit = useMutation(async (e) => {
+    setIsLoading(true)
     try {
       e.preventDefault();
-  
-      const { data : {data} } = await API.post("/login", form)
+
+      const {
+        data: { data },
+      } = await API.post("/login", form);
 
       dispatch({
         type: USER_ACTION_TYPE.LOGIN_SUCCESS,
         payload: data,
-      })
+      });
 
-      setAuthToken(cookies.token)
+      setAuthToken(cookies.token);
 
       Swal.fire({
-        icon:'success',
-        title: 'Login Successful',
+        icon: "success",
+        title: "Login Successful",
         showConfirmButton: false,
         timer: 1500,
       }).then(() => {
@@ -50,30 +53,12 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
           navigate("/admin/");
         } else {
           navigate("/");
-        } 
-      })
-
-
-      // let users = localStorage.getItem("users")
-      //   ? JSON.parse(localStorage.getItem("users"))
-      //   : [];
-      // const checkUser = users.find(
-      //   (user) => user.email == form.email && user.password == form.password
-      // );
-      // if (checkUser === undefined) {
-      //   return
-      // }
-      // setCookie("users", checkUser, { path: "/" });
-      // closeLoginFunc();
-      // if (checkUser.email === "admin@mail.com") {
-      //   navigate('/admin/')
-      //   window.location.reload()
-      // } else {
-      //   window.location.reload()
-      // }
-      
+        }
+      });
     } catch (error) {
-      console.log(error)
+      console.log(error);
+    } finally {
+      setIsLoading(false)
     }
   });
   return (
@@ -112,11 +97,12 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
             </Form.Group>
             <Form.Group>
               <Button
+                disabled={isLoading}
                 type="submit"
                 className="w-100 py-2"
                 style={{ backgroundColor: "#613D2B" }}
               >
-                Login
+                {isLoading ? "Logging in..." : "Login"}
               </Button>
             </Form.Group>
             <div className="mt-2">

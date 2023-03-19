@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Container, Row, Col, Card, InputGroup, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { formatRp } from "../utils/func";
 import { useQuery } from "react-query";
+import { FaSearch } from 'react-icons/fa'
+
 import { API } from "../config/api";
+import { formatRp } from "../utils/func";
 import { IMG_PATH } from "../utils/const";
 
 const Products = () => {
@@ -36,6 +38,7 @@ const Cards = () => {
       <Row>
         <Col>
           <InputGroup className="mb-3 w-25">
+          <InputGroup.Text id="inputGroup-sizing-sm"><FaSearch /></InputGroup.Text>
             <Form.Control
               onChange={(e) => setSearchName(e.target.value)}
               placeholder="Search product name"

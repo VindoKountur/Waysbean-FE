@@ -1,8 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import {
   Container,
-  Row,
-  Col,
   NavDropdown,
   Nav,
   Badge,
@@ -10,11 +8,12 @@ import {
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
-import { UserContext } from "../context/userContext";
 import cssModule from "./Navbar.module.css";
-import Login from "../components/Login";
 import Register from "./Register";
 
+import Login from "../components/Login";
+
+import { UserContext } from "../context/userContext";
 import icon from "../images/icon.png";
 import cart from "../images/cart.png";
 import noAvatar from "../images/noavatar.png";
@@ -24,12 +23,11 @@ import profileIcon from "../images/profile.png";
 import { IMG_PATH } from "../utils/const";
 
 export default function MyNavbar() {
-  const [cookies, setCookies, removeCookies] = useCookies(["users", "cart"]);
+  const [cookies, _, removeCookies] = useCookies(["users", "cart"]);
   const [state] = useContext(UserContext);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
 
   const [showRegister, setShowRegister] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -48,11 +46,6 @@ export default function MyNavbar() {
     navigate("/");
     window.location.reload();
   };
-  useEffect(() => {
-    console.log(state);
-    // const loginUser = cookies.users ? cookies.users : null;
-    // setUser(loginUser);
-  }, []);
 
   useEffect(() => {
     cekQuantity();

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Container, Table, Dropdown } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container, Table } from "react-bootstrap";
 import { useQuery } from 'react-query'
 
 import DetailModal from '../components/DetailModal'
@@ -8,7 +8,6 @@ import { API } from '../config/api'
 import { dateFormat } from '../utils/func'
 
 const AdminDashboard = () => {
-  const [transactionList, setTransactionList] = useState([]);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [itemDetail, setItemDetail] = useState(null)
 
@@ -28,22 +27,6 @@ const AdminDashboard = () => {
     setItemDetail(item)
   }
 
-  useEffect(() => {
-    // getTransactionList();
-  }, []);
-
-  const getTransactionList = () => {
-    let list = JSON.parse(localStorage.getItem("transactions")) || [];
-    setTransactionList(list);
-  };
-
-  const changeTransactionStatus = (transactionId, statusTxt) => {
-    let list = JSON.parse(localStorage.getItem("transactions")) || [];
-    let indexNumber = list.findIndex((item) => item.id === transactionId);
-    list[indexNumber].stat = statusTxt;
-    localStorage.setItem("transactions", JSON.stringify(list));
-    getTransactionList();
-  };
   return (
     <Container fluid className="mt-5">
       <h1 className="fw-bold fs-3" style={{ color: "#613D2B" }}>
@@ -100,44 +83,6 @@ const AdminDashboard = () => {
                   </td>
                   <td>
                     <StatusText text={transaction.status}></StatusText>
-                    {/* <Dropdown>
-                      <Dropdown.Toggle
-                        className="text-white"
-                        variant={variants[transaction.status]}
-                      >
-                        {statText[transaction.status]}
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item
-                          onClick={() =>
-                            changeTransactionStatus(transaction.id, "waiting")
-                          }
-                        >
-                          Waiting Approve
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() =>
-                            changeTransactionStatus(transaction.id, "success")
-                          }
-                        >
-                          Success
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() =>
-                            changeTransactionStatus(transaction.id, "cancel")
-                          }
-                        >
-                          Cancel
-                        </Dropdown.Item>
-                        <Dropdown.Item
-                          onClick={() =>
-                            changeTransactionStatus(transaction.id, "ontheway")
-                          }
-                        >
-                          On The Way
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown> */}
                   </td>
                 </tr>
               );
