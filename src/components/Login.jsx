@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Modal, Button, Form, Row } from "react-bootstrap";
+import { Modal, Button, Form, Row, Alert } from "react-bootstrap";
 import PropTypes from "prop-types";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
@@ -10,9 +10,10 @@ import { UserContext, USER_ACTION_TYPE } from "../context/userContext";
 import { API, setAuthToken } from "../config/api";
 
 const Login = ({ show, closeLoginFunc, handleToRegister }) => {
-  const [cookies, setCookie] = useCookies(["users", "token"]);
+  const [cookies] = useCookies(["users", "token"]);
   const [_, dispatch] = useContext(UserContext);
   const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState(null);
   const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
@@ -27,7 +28,7 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
   };
 
   const handleOnSubmit = useMutation(async (e) => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
       e.preventDefault();
 
@@ -56,9 +57,19 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
         }
       });
     } catch (error) {
-      console.log(error);
+      const alert = (
+        <Alert
+          variant="danger"
+          className="py-2"
+          role={"button"}
+          onClick={() => setMessage(null)}
+        >
+          {error.response.data.message}
+        </Alert>
+      );
+      setMessage(alert);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
   });
   return (
@@ -68,10 +79,12 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
           LOGIN
         </p>
         <Row>
+          <div>{message && message}</div>
           <Form onSubmit={(e) => handleOnSubmit.mutate(e)}>
             <Form.Group className="my-3">
               <Form.Control
                 type="email"
+                required
                 placeholder="Email"
                 name="email"
                 onChange={handleOnChange}
@@ -86,6 +99,7 @@ const Login = ({ show, closeLoginFunc, handleToRegister }) => {
               <Form.Control
                 type="password"
                 placeholder="Password"
+                required
                 name="password"
                 onChange={handleOnChange}
                 className="py-2"

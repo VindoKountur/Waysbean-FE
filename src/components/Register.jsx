@@ -4,16 +4,17 @@ import PropTypes from "prop-types";
 import Swal from "sweetalert2";
 import { API, setAuthToken } from "../config/api";
 import { useMutation } from "react-query";
-import { useCookies } from "react-cookie"
-import { useNavigate } from 'react-router-dom'
+import { useCookies } from "react-cookie";
+import { useNavigate } from "react-router-dom";
 
 import { UserContext, USER_ACTION_TYPE } from "../context/userContext";
 
 const Register = ({ show, closeRegister, handleToLogin }) => {
   const navigate = useNavigate();
-  const [_, dispatch] = useContext(UserContext)
-  const [cookies] = useCookies(['token'])
+  const [_, dispatch] = useContext(UserContext);
+  const [cookies] = useCookies(["token"]);
   const [message, setMessage] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [form, setForm] = useState({
     email: "",
     password: "",
@@ -30,13 +31,15 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
         },
       };
 
-      const { data: {data} } = await API.post("/register", form, config);
+      const {
+        data: { data },
+      } = await API.post("/register", form, config);
       dispatch({
         type: USER_ACTION_TYPE.USER_SUCCESS,
         payload: data,
       });
 
-      setAuthToken(cookies.token)
+      setAuthToken(cookies.token);
 
       Swal.fire({
         icon: "success",
@@ -49,7 +52,7 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
         } else {
           navigate("/");
           // window.location.reload();
-        } 
+        }
       });
     } catch (error) {
       const alert = (
@@ -129,11 +132,12 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
             </Form.Group>
             <Form.Group>
               <Button
+                disabled={isLoading}
                 type="submit"
                 className="w-100 py-2"
                 style={{ backgroundColor: "#613D2B" }}
               >
-                Register
+                {isLoading ? "Registering..." : "Register"}
               </Button>
             </Form.Group>
             <div className="mt-2">
