@@ -154,19 +154,6 @@ const UpdateProfile = ({ show, closeModal, user, refetch }) => {
                 Cancel
               </Button>
             </Form.Group>
-            {/* <div className="mt-2">
-              <p className="text-center">
-                Don't have an account? Klik{" "}
-                <button
-                  onClick={handleToRegister}
-                  type="button"
-                  className="border-0 bg-transparent"
-                  style={{ fontWeight: "bold" }}
-                >
-                  Here
-                </button>
-              </p>
-            </div> */}
           </Form>
         </Row>
       </Modal.Body>

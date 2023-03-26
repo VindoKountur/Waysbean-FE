@@ -14,7 +14,7 @@ const Register = ({ show, closeRegister, handleToLogin }) => {
   const [_, dispatch] = useContext(UserContext);
   const [cookies] = useCookies(["token"]);
   const [message, setMessage] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
