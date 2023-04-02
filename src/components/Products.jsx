@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Container, Row, Col, Card, InputGroup, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "react-query";
-import { FaSearch } from 'react-icons/fa'
+import { FaSearch } from "react-icons/fa";
 
 import { API } from "../config/api";
 import { formatRp } from "../utils/func";
@@ -37,8 +37,10 @@ const Cards = () => {
     <>
       <Row>
         <Col>
-          <InputGroup className="mb-3 w-25">
-          <InputGroup.Text id="inputGroup-sizing-sm"><FaSearch /></InputGroup.Text>
+          <InputGroup className="mb-3 w-50">
+            <InputGroup.Text id="inputGroup-sizing-sm">
+              <FaSearch />
+            </InputGroup.Text>
             <Form.Control
               onChange={(e) => setSearchName(e.target.value)}
               placeholder="Search product name"
@@ -56,7 +58,7 @@ const Cards = () => {
         ) : (
           <>
             {products?.map((product, i) => (
-              <Col key={product.id} sm={6} md={3} className="mb-3">
+              <Col key={product.id} xs={6} md={3} className="mb-3">
                 <Card
                   onClick={() => navigate(`/detailproduct/${product.id}`)}
                   style={{ cursor: "pointer" }}
